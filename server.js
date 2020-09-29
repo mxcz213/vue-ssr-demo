@@ -1,38 +1,36 @@
-const Vue = require('vue')
-const VueServerRenderer = require('vue-server-renderer')
-
-const vm = new Vue({
-  data() {
-    return {
-      name: 'hcj',
-      age: 20
-    }
-  },
-  template: `<div>我是：{{name}}，{{age}}岁</div>`
-})
-
 const Koa = require('koa')
 const Router = require('@koa/router')
+const { createBundleRenderer } = require('vue-server-renderer')
 const fs = require('fs')
 const path = require('path')
+const static = require('koa-static')
 
-const htmlStr = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf8') // 同步读取文件
+const app = new Koa()
+const router = new Router()
 
-// 创建一个渲染器
-const render = VueServerRenderer.createRenderer({
-  // 可以从本地读取html文件当作模板
-  // template: htmlStr, // 采用哪个模版去渲染,在html中加入这个<!--vue-ssr-outlet-->标签表示渲染到这个位置上
-}) // 创建一个渲染器
+// 读取server.bundle.js的内容
+// const serverBundle = fs.readFileSync(path.resolve(__dirname, 'dist/server.bundle.js'), 'utf8')
+// const template = fs.readFileSync(path.resolve(__dirname, 'dist/index.ssr.html'), 'utf8')
+// 创建一个渲染器，读取server.bundle.js，放进去
+// const render = createBundleRenderer(serverBundle, {
+//   template
+// });
 
-let app = new Koa() // app实例
-let router = new Router() // 路由实例
-
-router.get('/', async (ctx) => {
-  // ctx.body = 'hello world'
-  ctx.body = await render.renderToString(vm) // render.renderToString 返回的是一个promise
-  // // <div data-server-rendered="true">我是：hcj，20岁</div>
+// 换一种方式：json
+const serverBundle = require('./dist/vue-ssr-server-bundle.json')
+const clientManifest = require('./dist/vue-ssr-client-manifest.json')
+const template = fs.readFileSync(path.resolve(__dirname, 'dist/index.ssr.html'), 'utf8')
+const render = createBundleRenderer(serverBundle, {
+  template,
+  clientManifest // 通过后端注入前端的js脚本
 })
 
-app.use(router.routes())
-app.listen(3500)
+router.get('/', async (ctx) => {
+  // 在渲染页面的时候，需要让服务器根据当前路径渲染对应的路由
+  ctx.body = await render.renderToString()
+})
 
+
+app.use(router.routes())
+app.use(static(path.resolve(__dirname, 'dist'))) // 静态文件查找路径
+app.listen(3006)

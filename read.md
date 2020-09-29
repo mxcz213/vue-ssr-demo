@@ -28,3 +28,33 @@ vue-ssr-demo % npm install vue vue-server-renderer koa @koa/router -D
 ```
 ## 监听文件的改动，自动重启服务
 `npm install nodemon -g`
+
+# webpack配置文件，需要用到的包
+webpack.conofig.js  vue-style-loader支持服务端渲染，style-loader不支持服务端渲染
+
+- webpack webpack-cli webpack-dev-server
+- html-webpack-plugin
+- vue-loader vue-style-loader(支持服务端渲染) css-loader vue-template-compiler
+- @babel/core @babel/preset-env babel-loader
+```
+npm install webpack webpack-cli webpack-dev-server html-webpack-plugin vue-loader vue-style-loader css-loader vue-template-compiler @babel/core @babel/preset-env babel-loader -D
+```
+
+注意：使用vue-style-loader 样式不起作用: 把css-loader改成3的版本, 4的版本太高
+ webpack-merge 合并webpack的配置
+ concurrently // 连接多个命令一起
+ 
+后端打包的结果决定了index.html的内容，前断打包出来的结果决定交互逻辑（事件，请求等）
+所以两端需要同时打包，一起起n个服务，将几个命令连起来一起使用，可以使用 concurrently 包
+
+2. 打包内容自动插入 vue-server-render/client-plugin
+vue-server-render/server-plugin 根据打包出来的json 映射文件 entry（入口） ,files（文件内容）
+
+## 服务端渲染的特性
+- 首屏通过服务端渲染，后续切换逻辑还是通过前端路由 （回车的任何一个页面都是首屏）
+historyApi 默认刷新会报404
+每个客户端访问服务器的时候，都要返回一个全新的路由， 跟app一样不能共享同一个路由，需要返回多个路实例
+
+直接刷新一个路由页面，返回404，因为服务端渲染的时候 没有考虑到路径 只写了/
+
+
