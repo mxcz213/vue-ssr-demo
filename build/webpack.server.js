@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 const path = require('path')
-const { node } = require('./webpack.client')
 const resolve = dir => {
   return path.resolve(__dirname, dir)
 }

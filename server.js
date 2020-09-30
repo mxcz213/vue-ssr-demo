@@ -27,10 +27,20 @@ const render = createBundleRenderer(serverBundle, {
 
 router.get('/', async (ctx) => {
   // 在渲染页面的时候，需要让服务器根据当前路径渲染对应的路由
-  ctx.body = await render.renderToString()
+  // 不能写get('*')会报错，要写成'/(.*)',但是这样写，事件又不行了,原因是注册路由和静态资源匹配的顺序
+  try {
+    ctx.body = await render.renderToString({
+      url: ctx.url
+    })
+  } catch(e){
+    if(e.code === 404) {
+      ctx.body = 'page not found'
+    }
+  }
 })
 
-
-app.use(router.routes())
+// 先匹配静态文件，资源找不到再匹配路由规则，顺序不能乱
 app.use(static(path.resolve(__dirname, 'dist'))) // 静态文件查找路径
+app.use(router.routes())
+
 app.listen(3006)

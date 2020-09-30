@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
-// import createRouter from './create-router'
+import createRouter from './create-router'
+import createStore from './create-store'
 
 // const vm = new Vue({
 //   el: '#app',
@@ -12,14 +13,17 @@ import App from './App.vue'
 
 
 export default () => {
-  // const router = createRouter()
+  const router = createRouter()
+  const store = createStore()
   const app = new Vue({
-    // router,
+    router,
+    store,
     render: h => h(App)
   })
 
   return {// 返回一个对象，后续会加入router等
     app,
-    // router
+    router,
+    store
   }
 }
