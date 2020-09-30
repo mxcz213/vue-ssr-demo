@@ -13,6 +13,7 @@ export default () => {
   const router = new VueRouter({
     mode: 'history',
     routes: [
+      {path: '/', redirect: '/bar'},
       {path: '/foo', component: Foo},
       {path: '/bar', component: Bar}
     ]

@@ -15,8 +15,8 @@ module.exports = merge(base, {
   plugins: [
     new VueSSRClientPlugin(), // 打包出来的是一个映射json文件,不需要写死引入client.bundle.js,打包出来的名字不是固定的
     // 客户端打包不需要html,因为用的是服务端打包出来的ssr.html
-    // new HtmlWebpackPlugin({
-    //   template: resolve('../public/index.html')
-    // }),
+    new HtmlWebpackPlugin({
+      template: resolve('../public/index.html')
+    }),
   ]
 })

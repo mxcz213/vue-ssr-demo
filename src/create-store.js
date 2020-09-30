@@ -31,7 +31,7 @@ export default () => {
   //       "name": "good"
   //   }
   // </script>
-  window.__INITIAL_STATE__这个方法名也是固定的
+  // window.__INITIAL_STATE__这个方法名也是固定的
   if(typeof window !== 'undefined' && window.__INITIAL_STATE__) {
     store.replaceState(window.__INITIAL_STATE__)
   }

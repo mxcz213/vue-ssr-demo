@@ -20,8 +20,8 @@ export default (context) => { // context中包含着当前访问服务端的路�
         // 调用组件的 asyncData 方法, 将store传进去
         Promise.all(matchedComponents.map(component => {
           if(component.asyncData) {
-            // 返回的是promise，等到所有组件3的promise全部完成
-            return component.asyncData(store)
+            // 返回的是promise，等到所有组件的promise全部完成
+            return component.asyncData({ store, route: router.currentRoute})
           }
         })).then(() => {
           // 所有promise完成，路由准备完毕调用返回app
@@ -30,10 +30,10 @@ export default (context) => { // context中包含着当前访问服务端的路�
           context.state = store.state
 
           resolve(app)
-        },reject)
+        }).catch(reject)
         
       } else {
-        reject({code: 404})
+        return reject({code: 404})
       }
       
     }, reject)

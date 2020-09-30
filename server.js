@@ -25,7 +25,7 @@ const render = createBundleRenderer(serverBundle, {
   clientManifest // 通过后端注入前端的js脚本
 })
 
-router.get('/', async (ctx) => {
+router.get('/(.*)', async (ctx) => {
   // 在渲染页面的时候，需要让服务器根据当前路径渲染对应的路由
   // 不能写get('*')会报错，要写成'/(.*)',但是这样写，事件又不行了,原因是注册路由和静态资源匹配的顺序
   try {
